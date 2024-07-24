@@ -18,6 +18,7 @@ public class MongoDbLogRepository : IMongoDbLogRepository
         try
         {
             await _context.MongoLog.InsertOneAsync(request);
+            
            
         }
         catch (Exception ex)

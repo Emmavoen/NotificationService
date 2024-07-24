@@ -9,6 +9,6 @@ namespace NotificationService.Application.Contract.Service
 {
     public  interface IEmailService
     {
-        void SendEmail(EmailRequest request);
+        Task SendEmail(EmailRequest request);
     }
 }

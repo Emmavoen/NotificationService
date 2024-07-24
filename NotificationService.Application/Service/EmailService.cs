@@ -2,8 +2,10 @@
 using MimeKit;
 using MimeKit.Text;
 using NotificationService.Application.Configuration;
+using NotificationService.Application.Contract;
 using NotificationService.Application.Contract.Service;
 using NotificationService.Domain.DTOs.Request;
+using NotificationService.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +17,30 @@ namespace NotificationService.Application.Service
     public class EmailService : IEmailService
     {
         private readonly EmailConfiguration _emailConfig;
+        private readonly IMongoDbLogRepository _mongodb;
 
-        public EmailService(EmailConfiguration emailConfig)
+        public EmailService(EmailConfiguration emailConfig, IMongoDbLogRepository mongodb)
         {
             _emailConfig = emailConfig;
+            _mongodb = mongodb;
         }
-        public void SendEmail(EmailRequest request)
+        public async Task SendEmail(EmailRequest request)
         {
             var emailMessage =  CreateEmailMessage(request);
             Send(emailMessage);
+
+
+            var notificationActivity = new NotificationActivity()
+            {
+                SentTo = request.To,
+                SentAt = DateTime.Now,
+                Status = true,
+                Purpose = request.Subject,
+                NotificationType = NotificationType.Email,
+                HasAttachment = true,
+
+            };
+            await _mongodb.CreateLog(notificationActivity);
         }
 
 

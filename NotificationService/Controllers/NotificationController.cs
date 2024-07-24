@@ -16,9 +16,9 @@ namespace NotificationService.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendNotiication(EmailRequest request)
+        public async Task<IActionResult> SendNotiication(EmailRequest request)
         {
-             _emailService.SendEmail(request);
+            await  _emailService.SendEmail(request);
             return Ok();
         }
     }
